@@ -1,0 +1,23 @@
+name: Windows RDP
+
+on: [workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 360
+
+    steps:
+    - name: Enable RDP
+      run: |
+        net user runneradmin Anmol@123
+        net localgroup administrators runneradmin /add
+        reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server" /v fDenyTSConnections /t REG_DWORD /d 0 /f
+        Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+
+    - name: Show IP
+      run: ipconfig
+
+    - name: Keep Alive
+      run: ping -t 127.0.0.1
+      
